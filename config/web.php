@@ -14,7 +14,7 @@ $config = [
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => 'Pph85IjCrnlKP0clYWf1PGlxAPwgXX6b',
+            'cookieValidationKey' => 'CDiip2eQlLJHBnSbT5noMM_YnLH3NO91',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -27,31 +27,11 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            'useFileTransport' => false,
-            'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'host' => 'gmail.com',
-                'username' => 'webstar0103@gmail.com',
-                'password' => 'doublebang0103!',
-                'port' => '587',
-                'encryption' => 'tls',
-            ],
+            'class' => \yii\symfonymailer\Mailer::class,
+            'viewPath' => '@app/mail',
+            // send all mails to a file by default.
+            'useFileTransport' => true,
         ],
-        'params' => [
-            // ...
-            'adminEmail' => 'petpanda0057@gmail.com',
-        ],
-        'on newFruit' => function ($event) {
-            $fruit = $event->fruit;
-        
-            Yii::$app->mailer->compose()
-                ->setTo(Yii::$app->params['adminEmail'])
-                ->setFrom('webstar0103@example.com')
-                ->setSubject('New fruit added: ' . $fruit->name)
-                ->setTextBody('A new fruit has been added to the database: ' . $fruit->name)
-                ->send();
-        },
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -61,15 +41,24 @@ $config = [
                 ],
             ],
         ],
+        // 'on newFruit' => function ($event) {
+        //     $fruit = $event->fruit;
+        
+        //     Yii::$app->mailer->compose()
+        //         ->setTo(Yii::$app->params['adminEmail'])
+        //         ->setFrom('webstar0103@example.com')
+        //         ->setSubject('New fruit added: ' . $fruit->name)
+        //         ->setTextBody('A new fruit has been added to the database: ' . $fruit->name)
+        //         ->send();
+        // },
         'db' => $db,
-        /*
+        
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
