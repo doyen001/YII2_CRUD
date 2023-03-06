@@ -41,16 +41,6 @@ $config = [
                 ],
             ],
         ],
-        // 'on newFruit' => function ($event) {
-        //     $fruit = $event->fruit;
-        
-        //     Yii::$app->mailer->compose()
-        //         ->setTo(Yii::$app->params['adminEmail'])
-        //         ->setFrom('webstar0103@example.com')
-        //         ->setSubject('New fruit added: ' . $fruit->name)
-        //         ->setTextBody('A new fruit has been added to the database: ' . $fruit->name)
-        //         ->send();
-        // },
         'db' => $db,
         
         'urlManager' => [

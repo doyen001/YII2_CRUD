@@ -37,7 +37,6 @@ class FruitController extends \yii\rest\Controller
 
         $countQuery = clone $query;
         $pages = new Pagination([
-            // 'totalCount' => 40,
             'defaultPageSize' => 40,
         ]);
 
@@ -56,7 +55,7 @@ class FruitController extends \yii\rest\Controller
     }
 
     /**
-     * 
+     * Add new fruit
      */
 
      public function actionCreate()
@@ -81,23 +80,5 @@ class FruitController extends \yii\rest\Controller
                 ];
             }
     }
-
-    // public function actionCreate()
-    // {
-    //     $json = file_get_contents('php://input');
-    //     $data = json_decode($json, true);
-    //     var_dump($data);
-
-    //     $model = new Fruit();
-    //     $model->attributes = $data;
-
-    //     if ($model->save()) {
-    //         $response = Yii::$app->getResponse();
-    //         $response->setStatusCode(201);
-    //         return ['status' => true, 'message' => 'Fruit created successfully'];
-    //     } else {
-    //         return ['status' => false, 'message' => 'Failed to create fruit', 'errors' => $model->errors];
-    //     }
-    // }
 
 }
