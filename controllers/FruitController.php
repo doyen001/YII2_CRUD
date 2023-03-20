@@ -11,23 +11,11 @@ use app\models\Fruit;
 
 class FruitController extends \yii\rest\Controller
 {    
-    public static function allowedDomains() {
-        return [
-            '*',                        // star allows all domains
-        ];
-    }
-
     public function behaviors()
     {
         return [
             'corsFilter' => [
                 'class' => \yii\filters\Cors::class,
-                'cors'  => [
-                    // restrict access to domains:
-                    'Origin'                           => static::allowedDomains(),
-                    'Access-Control-Request-Method'    => ['POST'],
-                    'Access-Control-Max-Age'           => 3600,                 // Cache (seconds)
-                ],
             ],
         ];
     }
@@ -46,7 +34,6 @@ class FruitController extends \yii\rest\Controller
     public function actionIndex($name = null, $family = null)
     {
         $query = Fruit::find();
-
         if (!empty($name)) {
             $query->andWhere(['like', 'name', $name]);
         }
@@ -57,7 +44,6 @@ class FruitController extends \yii\rest\Controller
 
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count()]);
-
         $models = $query->offset($pages->offset)
             ->limit($pages->limit)
             ->all();
@@ -65,7 +51,7 @@ class FruitController extends \yii\rest\Controller
         $response = Yii::$app->getResponse();
         $response->format = Response::FORMAT_JSON;
         $response->data = [
-            'data' => $models,
+            'rows' => $models,
             'pages' => $pages,
         ];
 
@@ -76,22 +62,27 @@ class FruitController extends \yii\rest\Controller
     {
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
-
         $model = new Fruit();
         $model->attributes = $data;
-
         if ($model->save()) {
+            $email = Yii::$app->mailer->compose()
+                    ->setFrom('test@gmail.com')
+                    ->setTo('test@gmail.com')
+                    ->setSubject('New Fruit Added')
+                    ->setTextBody('A new fruit has been added: ')
+                    ->setHtmlBody('<b>HTML</b> content of the email')
+                    ->send();
             $response = Yii::$app->getResponse();
+            $response->format = Response::FORMAT_JSON;
             $response->setStatusCode(201);
-            // return ['status' => true, 'message' => 'Fruit created successfully'];
-            return 'Fruit created successfully';
+            $response->data = ['status' => true, 'message' => 'Fruit created successfully'];
+            return $response;
         } else {
-            // return ['status' => false, 'message' => 'Failed to create fruit', 'errors' => $model->errors];
-            $data = ['status' => false, 'message' => 'Failed to create fruit', 'errors' => $model->errors];
-            $response = Yii::$app->response;
-            $response->format = yii\web\Response::FORMAT_JSON;
-            $response->data = $data;
-
+            $response = Yii::$app->getResponse();
+            $response->format = Response::FORMAT_JSON;
+            $response->setStatusCode(500);
+            $response->data = ['status' => false, 'message' => 'Failed to create fruit', 'errors' => $model->errors];
+            
             return $response;
         }
     }
